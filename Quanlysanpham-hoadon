@@ -1,0 +1,379 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+// class san pham
+class SanPham
+{
+public:
+  int ma_sp;
+  string ten_sp;
+  float gia;
+  int so_luong_sp;
+
+  SanPham(int ma_sp, string ten_sp, float gia, int so_luong_sp)
+  {
+    this->ma_sp = ma_sp;
+    this->ten_sp = ten_sp;
+    this->gia = gia;
+    this->so_luong_sp = so_luong_sp;
+  }
+
+  SanPham() {}
+};
+
+// class ma giam gia
+class MaGiamGia
+{
+public:
+  string ma_gg; // ma giam gia
+  float tr_gg;  // phan tram giam gia
+
+  MaGiamGia(string ma_gg, float tr_gg)
+  {
+    this->ma_gg = ma_gg;
+    this->tr_gg = tr_gg;
+  }
+
+  MaGiamGia() {}
+};
+
+// class Hoa don
+class HoaDon
+{
+public:
+  int ma_hd;
+  SanPham sp_trong_hd[50];
+  int tong_so_luong_sp_trong_hd;
+  string ma_gg_trong_hd;
+
+  HoaDon(int ma_hd, SanPham sp_trong_hd[], int tong_so_luong_sp_trong_hd, string ma_gg_trong_hd)
+  {
+    this->ma_hd = ma_hd;
+    for (int i = 0; i < tong_so_luong_sp_trong_hd; i++)
+    {
+      this->sp_trong_hd[i] = sp_trong_hd[i];
+    }
+    this->tong_so_luong_sp_trong_hd = tong_so_luong_sp_trong_hd;
+    this->ma_gg_trong_hd = ma_gg_trong_hd;
+  }
+
+  HoaDon() {}
+  // tinh tong tien hh khi chua add ma giam gia
+  float tinh_tong_tien_hd()
+  {
+    float tong_tien_hd = 0.0; // khai bao tong tien bang dau la 0.0
+    for (int i = 0; i < this->tong_so_luong_sp_trong_hd; i++)
+    {
+      tong_tien_hd += this->sp_trong_hd[i].gia * this->sp_trong_hd[i].so_luong_sp; // so luong san pham trong hoa don khi nhap vao
+    }
+
+    return tong_tien_hd;
+  }
+
+  // show  tong tin hoa don
+  void hien_thi_hoa_don(float phan_tram_gg)
+  {
+    cout << "Ma hoa don: " << this->ma_hd << endl;
+    cout << "Ma giam gia cua hoa don: " << this->ma_gg_trong_hd << endl;
+
+    if (this->tong_so_luong_sp_trong_hd == 0)
+    {
+      cout << "Hoa don khong co san pham nao" << endl;
+      return;
+    }
+
+    cout << "Danh sach san pham co trong hoa don:" << endl;
+    for (int i = 0; i < this->tong_so_luong_sp_trong_hd; i++)
+    {
+      cout << "Ma san pham: " << this->sp_trong_hd[i].ma_sp << endl;
+      cout << "Ten san pham: " << this->sp_trong_hd[i].ten_sp << endl;
+      cout << "Gia san pham: " << this->sp_trong_hd[i].gia << endl;
+      cout << "So luong: " << this->sp_trong_hd[i].so_luong_sp << endl;
+      cout << "-----------------------------" << endl;
+    }
+
+    float tong = this->tinh_tong_tien_hd();
+    cout << "Chiet khau pham tram ma giam gia: " << phan_tram_gg << "%" << endl;
+    cout << "Tong tien " << tong - tong * phan_tram_gg / 100 << endl;
+  }
+};
+
+// tim san pham theo ma
+void tim_san_pham(SanPham sp[], int tong_so_luong_sp)
+{
+  int ma_sp;
+  cout << "Tim san pham theo ma" << endl;
+  cout << "Nhap ma san pham:";
+  cin >> ma_sp;
+
+  for (int i = 0; i < tong_so_luong_sp; i++)
+  {
+    if (sp[i].ma_sp == ma_sp)
+    {
+      cout << "San pham " << i + 1 << ":" << endl;
+      cout << "Ma san pham: " << sp[i].ma_sp << endl;
+      cout << "Ten san pham: " << sp[i].ten_sp << endl;
+      cout << "Gia san pham: " << sp[i].gia << endl;
+      cout << "So luong san pham: " << sp[i].so_luong_sp << endl;
+      cout << endl;
+
+      return;
+    }
+
+    cout << "Khong tim thay san pham nao!" << endl;
+    return;
+  }
+}
+
+SanPham lay_thong_tin_sp_theo_ma(SanPham sp[], int tong_so_luong_sp, int ma_sp)
+{
+  for (int i = 0; i < tong_so_luong_sp; i++)
+  {
+
+    if (sp[i].ma_sp == ma_sp)
+    {
+      return sp[i];
+    }
+  }
+
+  return SanPham(-1, "", 0, 0);
+}
+
+// them san pham
+void them_san_pham(SanPham sp[], int &tong_so_luong_sp)
+{
+
+  int ma_sp;
+  string ten_sp;
+  float gia;
+  int so_luong_sp;
+
+  // nhap sp
+  cout << "Nhap ma san pham: ";
+  cin >> ma_sp;
+  cout << "Nhap ten san pham: ";
+  cin >> ten_sp;
+  cout << "Nhap gia san pham: ";
+  cin >> gia;
+  cout << "Nhap so luong san pham: ";
+  cin >> so_luong_sp;
+
+  bool loi_nhap_sp = false;
+
+  // validate gia tien
+  if (gia < 1000 || gia > 1000000)
+  {
+    cout << "Loi: Gia tien san pham khong hop le!" << endl;
+    loi_nhap_sp = true;
+  }
+
+  // validate so luong
+  if (so_luong_sp < 1 || so_luong_sp > 50)
+  {
+    cout << "Loi: So luong san pham khong hop le!" << endl;
+    loi_nhap_sp = true;
+  }
+
+  if (loi_nhap_sp)
+  {
+    them_san_pham(sp, tong_so_luong_sp);
+  }
+
+  SanPham sp_theo_ma = lay_thong_tin_sp_theo_ma(sp, tong_so_luong_sp, ma_sp);
+
+  if (sp_theo_ma.ma_sp != -1)
+  {
+    cout << "Ma san pham da ton tai!" << endl;
+    loi_nhap_sp = true;
+    them_san_pham(sp, tong_so_luong_sp);
+  }
+ 
+  if (!loi_nhap_sp) {
+    SanPham san_pham_moi(ma_sp, ten_sp, gia, so_luong_sp);
+    sp[tong_so_luong_sp] = san_pham_moi;
+    tong_so_luong_sp++;
+    cout << "==========================" << endl;
+    cout << "Them san pham thanh cong." << endl;
+  }
+
+  return;
+}
+
+// show  danh sach san pham
+void hien_thi_danh_sach_san_pham(SanPham sp[], int tong_so_luong_sp)
+{
+  if (tong_so_luong_sp == 0)
+  {
+    cout << "Danh sach san pham rong!" << endl;
+    return;
+  }
+
+  cout << "Danh sach san pham:" << endl;
+  for (int i = 0; i < tong_so_luong_sp; i++)
+  {
+    cout << "San pham " << i + 1 << ":" << endl;
+    cout << "Ma san pham: " << sp[i].ma_sp << endl;
+    cout << "Ten san pham: " << sp[i].ten_sp << endl;
+    cout << "Gia san pham: " << sp[i].gia << endl;
+    cout << "So luong san pham: " << sp[i].so_luong_sp << endl;
+    cout << endl;
+  }
+
+  return;
+}
+
+MaGiamGia lay_mgg(MaGiamGia mgg[], int tong_so_luong_mgg, string ma)
+{
+  for (int i = 0; i >= 0; i++)
+  {
+    if (mgg[i].ma_gg == ma)
+    {
+      return mgg[i];
+    }
+  }
+
+  return MaGiamGia("", 0);
+}
+
+void nhap_hoa_don_thanh_toan(HoaDon hoa_don[], int &tong_so_hd, SanPham sp[], int tong_so_luong_sp, MaGiamGia mgg[], int tong_so_luong_mgg)
+{
+  int ma_hd;
+  cout << "Nhap ma hoa don: ";
+  cin >> ma_hd;
+
+  SanPham mang_sp_trong_hb[50];
+  int tong_so_loai_sp = 0;
+  for (int i = 1; i > 0; i++)
+  {
+    int ma_sp_trong_hb;
+    int so_luong_sp;
+
+    cout << "Nhap ma san pham hoac nhap -1 de hoan tat: ";
+    cin >> ma_sp_trong_hb;
+
+    if (ma_sp_trong_hb == -1)
+    {
+      break;
+    }
+
+    cout << "Nhap so luong san pham: ";
+    cin >> so_luong_sp;
+    SanPham sp_trong_hb = lay_thong_tin_sp_theo_ma(sp, tong_so_luong_sp, ma_sp_trong_hb); // lay thong tin sp theo ma
+
+    if (sp_trong_hb.ma_sp == -1)
+    {
+      cout << " San pham khong ton tai!" << endl;
+      continue;
+    }
+
+    SanPham sp_trong_hb_new = SanPham(sp_trong_hb.ma_sp, sp_trong_hb.ten_sp, sp_trong_hb.gia, so_luong_sp);
+    mang_sp_trong_hb[i - 1] = sp_trong_hb_new;
+    tong_so_loai_sp++;
+  }
+
+  string is_mgg;
+  cout << "Ban co ma giam gia khong (an Y neu co): ";
+  cin >> is_mgg;
+
+  if (is_mgg == "Y" || is_mgg == "y")
+  {
+    for (int a = 0; a >= 0; a++)
+    {
+      string ma_gg;
+      cout << "Nhap ma giam gia: ";
+      cin >> ma_gg;
+
+      MaGiamGia tt_ma_gg = lay_mgg(mgg, tong_so_luong_mgg, ma_gg);
+
+      if (tt_ma_gg.ma_gg == "")
+      {
+        cout << "Ma giam khong ton tai an C de thoat!" << endl;
+        string c;
+        cin >> c;
+
+        if (c == "c" || c == "C")
+        {
+          break;
+        }
+      }
+
+      HoaDon hoa_don_moi = HoaDon(ma_hd, mang_sp_trong_hb, tong_so_loai_sp, tt_ma_gg.ma_gg);
+
+      hoa_don_moi.hien_thi_hoa_don(tt_ma_gg.tr_gg);
+    }
+  }
+  HoaDon hoa_don_moi = HoaDon(ma_hd, mang_sp_trong_hb, tong_so_loai_sp, "");
+  hoa_don_moi.hien_thi_hoa_don(0);
+}
+
+void tao_ma_giam_mau(MaGiamGia mgg[], int &tong_so_luong_mgg)
+{
+  MaGiamGia mgg1 = MaGiamGia("mgg1", 10.0);
+  MaGiamGia mgg2 = MaGiamGia("mgg2", 15.0);
+  MaGiamGia mgg3 = MaGiamGia("mgg3", 20.0);
+
+  mgg[tong_so_luong_mgg++] = mgg1;
+  mgg[tong_so_luong_mgg++] = mgg2;
+  mgg[tong_so_luong_mgg++] = mgg3;
+
+  return;
+}
+
+// main
+int main()
+{
+  SanPham sanPham[100];
+  int tong_so_luong_sp = 0;
+
+  MaGiamGia maGiamGia[3];
+  int tong_so_luong_mgg = 0;
+  tao_ma_giam_mau(maGiamGia, tong_so_luong_mgg); // tao 3 ma giam gia mau
+
+  HoaDon hoaDon[100];
+  int tong_so_hd = 0;
+
+  while (true)
+  {
+    cout << "Chon tuy chon:" << endl;
+    cout << "1. Them san pham" << endl;
+    cout << "2. Tim san pham" << endl;
+    cout << "3. Hien thi danh sach san pham" << endl;
+    cout << "4. Nhap hoa don thanh toan" << endl;
+    cout << "5. Thoat" << endl;
+
+    int choice;
+    cin >> choice;
+
+    switch (choice)
+    {
+    case 1:
+      int n;
+      cout << "Nhap so luong san pham muon them: ";
+      cin >> n;
+
+      for (int i = 0; i < n; i++)
+      {
+        them_san_pham(sanPham, tong_so_luong_sp);
+      }
+      break;
+    case 2:
+      tim_san_pham(sanPham, tong_so_luong_sp);
+      break;
+    case 3:
+      hien_thi_danh_sach_san_pham(sanPham, tong_so_luong_sp);
+      break;
+    case 4:
+      nhap_hoa_don_thanh_toan(hoaDon, tong_so_hd, sanPham, tong_so_luong_sp, maGiamGia, tong_so_luong_mgg);
+      break;
+    case 5:
+      return 0;
+    default:
+      cout << "Lua chon khong hop le." << endl;
+      break;
+    }
+  }
+  return 0;
+}
